@@ -1,0 +1,240 @@
+.mg-wrapper {
+  position: relative;
+  text-align: center;
+}
+.mg-wrapper.mg-horizontal-layout .mg-image {
+  float: left;
+  width: 55%;
+  margin-right: 5%;
+}
+.mg-wrapper.mg-horizontal-layout .mg-controls {
+  float: left;
+  width: 40%;
+}
+.mg-wrapper .mg-image {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto 10px;
+  width: auto;
+  overflow: hidden;
+  text-align: left;
+}
+.mg-wrapper .mg-image > img {
+  max-width: 100%;
+  width: 100%;
+}
+.mg-wrapper .mg-image:hover .mg-helpers {
+  visibility: visible;
+}
+.mg-wrapper .mg-canvas {
+  position: absolute;
+  z-index: 3;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+.mg-wrapper .mg-canvas canvas {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 3;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox {
+  margin-bottom: 10px;
+  text-align: right;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox:last-child {
+  margin: 0;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox:after {
+  content: ' ';
+  height: 0;
+  display: block;
+  clear: both;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox input {
+  box-sizing: border-box;
+  padding: 0 5px;
+  max-width: 100%;
+  height: 30px;
+  font-size: 16px;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 2px solid #DDD;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox input:not(:last-child),
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox .colorpickerContainer {
+  float: left;
+  margin-right: 2%;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox .mg-textbox-text {
+  width: 40%;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox .mg-textbox-size,
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox .mg-textbox-border-width {
+  width: 13%;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox .colorpickerContainer {
+  width: 13%;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-textbox .colorpickerReplacer {
+  width: 100%;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-add-textbox,
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-advanced-settings-toggle,
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-toolbox-toggle {
+  display: block;
+  padding: 5px 0;
+  text-align: center;
+  font-size: 20px;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-add-textbox.active,
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-advanced-settings-toggle.active,
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-toolbox-toggle.active {
+  font-weight: bold;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .option input {
+  margin-right: 5%;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .option label {
+  display: inline;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-toolbox .mg-toolbox-item {
+  float: left;
+  width: 21.25%;
+  margin-right: 5%;
+  text-align: center;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-toolbox .mg-toolbox-item button,
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-toolbox .mg-toolbox-item input,
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-toolbox .mg-toolbox-item .colorpickerReplacer {
+  box-sizing: border-box;
+  width: 100%;
+  height: 30px;
+}
+.mg-wrapper:not(.usingBootstrap) .mg-controls .mg-toolbox .mg-toolbox-item:last-child {
+  margin-right: 0;
+}
+.mg-wrapper.usingBootstrap .mg-controls .row:not(:last-child) {
+  margin-bottom: 10px;
+}
+.mg-wrapper.usingBootstrap .mg-controls input,
+.mg-wrapper.usingBootstrap .mg-controls .colorpickerReplacer {
+  width: 100%;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-1 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-2 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-3 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-4 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-5 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-6 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-7 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-8 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-9 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-10 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-11 {
+  margin-bottom: 5px;
+}
+.mg-wrapper.usingBootstrap .mg-controls .col-md-12 {
+  margin-bottom: 5px;
+}
+.mg-wrapper .mg-controls {
+  text-align: left;
+  /* Adjustments for default color picker */
+}
+.mg-wrapper .mg-controls .mg-textbox {
+  margin-bottom: 10px;
+}
+.mg-wrapper .mg-controls .mg-textbox > div {
+  text-align: center;
+}
+.mg-wrapper .mg-controls .option :first-child {
+  text-align: center;
+}
+.mg-wrapper .mg-controls .sp-preview {
+  margin: 0;
+  width: 80%;
+}
+.mg-wrapper .mg-controls .sp-dd {
+  width: 20%;
+  text-align: right;
+}
+.mg-wrapper .mg-helpers {
+  visibility: hidden;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+.mg-wrapper .mg-helpers .draggable {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  width: 100%;
+  border: 2px dashed #222;
+}
+.mg-wrapper .mg-helpers .draggable:hover:before {
+  border-color: #FFF;
+}
+.mg-wrapper .mg-helpers .draggable:before {
+  display: block;
+  content: ' ';
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  border: 2px dashed #CCC;
+}
+.mg-wrapper .mg-css-preview {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 2;
+}
+.mg-wrapper .mg-css-preview div {
+  position: absolute;
+}
+.mg-wrapper .mg-drawing {
+  display: none;
+  position: absolute;
+  z-index: 5;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+.mg-wrapper:after {
+  content: ' ';
+  height: 0;
+  display: block;
+  clear: both;
+}
