@@ -489,7 +489,7 @@
 				if(MG.settings.colorPicker == null && $.isFunction($.fn.spectrum))
 				{
 					var changeEvent = function(color){
-// 						$(this).val(color.toHexString());
+						$(this).val(color.toHexString());
 						$(this).attr("value", color.toHexString());
 						$(this).trigger("change");
 						
