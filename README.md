@@ -70,26 +70,20 @@ Property             |Default     |Description
 ---------------------|------------|-----------
 defaultTextStyle     |{<br>color: "#FFFFFF",<br>size: 42,<br>font: "Impact, Arial",<br>style: "normal",<br>forceUppercase: true,<br>borderColor: "#000000",<br>borderWidth: 2,<br>}|Default text style properties for all captions. Each text box can be styled seperately by user.
 defaultDrawingStyle  |{<br>color: "#FF0000",<br>lineWidth: 10,<br>}|Default drawing style properties.
-
 minFontSize          |1           |Minimum font size the user can set.
 maxFontSize          |128         |Maximum font size the user can set.
 minBorderWidth       |0           |Minimum border (text stroke) size the user can set.
 maxBorderWidth       |10          |Maximum border (text stroke) size the user can set.
-
 fontSizeStep         |1           |Step size for spinner related to the font size.
 borderWidthStep      |1           |Step size for spinner related to the text stroke size.
-
 captions             |[]          |Default captions that will show up after plugin initialisation. The first element of the array is the top text, the second is the bottom text and every array element after that is an additional text box positioned in the middle.
-
 previewMode          |canvas      |Preview mode (rendering method). Available options: "canvas", "css". CSS mode is faster on slow machines, but isn't 100% accurate with rendered canvas layers.
 outputFormat         |image/png   |Output format of saved canvas. Can be any format supported by HTML5 Canvas.
-
 editingEnabled       |true        |Enables/disables editing. If set to false, the controls don't show at all. You can use it to just present captions defined by you.
 dragResizeEnabled    |true        |Enables/disables dragging and resizing text boxes.
 drawingAboveText     |true        |Determines whether the drawing should be render above captions (true) or below (false).
 showAdvancedSettings |true        |Enables/disables editing advanced settings by user.
 colorPicker          |null        |Color picker callback, if you want to use a different color picker. Set to *false* if you want to disable color picker entirely. See an example in the "Custom Color Picker" section below.
-
 wrapperClass         |mg-wrapper  |Class name of the div wrapping the image and all additional elements created by this plugin.
 toolboxSelector      |null        |Selector or jQuery object of toolbox container. Use it if you want to have the drawing UI in a different place on the page.
 layout               |vertical    |Layout of the meme generator. Available options: "vertical", "horizontal".
@@ -104,9 +98,9 @@ onNewTextBox         |null        |It fires when the user creates new text box.
 ### Methods
 Method name          |Description
 ---------------------|-----------
-save                 |Returns the image with captions as data url string.<br>*Usage:*$("selector").memeGenerator("save");
-saveCanvas           |Returns the image with captions as a single canvas element.<br>*Usage:*$("selector").memeGenerator("saveCanvas");
-download             |Generates the image and automatically initiates a download.<br>*Usage:*$("selector").memeGenerator("download");
+save                 |Returns the image with captions as data url string.<br>**Usage:**$("selector").memeGenerator("save");
+saveCanvas           |Returns the image with captions as a single canvas element.<br>**Usage:**$("selector").memeGenerator("saveCanvas");
+download             |Generates the image and automatically initiates a download.<br>**Usage:**$("selector").memeGenerator("download");
 
 ### Custom Color Picker - Example
 By default, Meme Generator plugin is using Spectrum as a color picker, if it's included on the page, otherwise it falls back to a simple text input.
