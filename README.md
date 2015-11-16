@@ -24,7 +24,7 @@ Written by Maciej Gierej - http://makg.eu
 - Predefining captions
 
 ## Demo
-
+http://makg10.github.io/jquery-meme-generator/
 
 ## Requirements
 - jQuery 1.11+
