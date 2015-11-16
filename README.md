@@ -145,5 +145,80 @@ $.fn.memeGenerator("i18n", "pl", {
 });
 ```
 
+## Saving an image on server side
+You can easily send an image using AJAX request with generated image data URL as a parameter.
+
+```javascript
+<a href="#" id="save">
+
+<script type="text/javascript">
+$("#save").click(function(e){
+	e.preventDefault();
+	
+	var imageDataUrl = $("#example-save").memeGenerator("save");
+	
+	$.ajax({
+		url: "/save-img",
+		type: "POST",
+		data: {image: imageDataUrl},
+		dataType: "json",
+		success: function(response){
+			$("#preview").html(
+				$("<img>").attr("src", response.filename)
+			);
+		}
+	});
+});
+</script>
+```
+
+### PHP
+```php
+<?php
+$data = $_POST['image'];
+
+if(preg_match('/data:image\/(gif|jpeg|png);base64,(.*)/i', $data, $matches))
+{
+	$imageType = $matches[1];
+	$imageData = base64_decode($matches[2]);
+	
+	$image = imagecreatefromstring($imageData);
+	$filename = md5($imageData) . '.png';
+	
+	if(imagepng($image, 'images/' . $filename))
+	{
+		echo json_encode(array('filename' => '/scripts/images/' . $filename));
+	} else {
+		throw new Exception('Could not save the file.');
+	}
+} else {
+	throw new Exception('Invalid data URL.');
+}
+```
+
+### Python w/ Django
+```python
+import hashlib
+import json
+import re
+from binascii import a2b_base64
+from django.http import JsonResponse
+
+def save_img(request):
+	if request.method == 'POST':
+		data = request.POST.get('image', '')
+		
+		matches = re.match(r'data:image\/(gif|jpeg|png);base64,(.*)', data)
+		
+		binary_data = a2b_base64(matches.group(2))
+		filename = hashlib.md5(binary_data).hexdigest() + '.png';
+		
+		fd = open('static/images/' + filename, 'wb')
+		fd.write(binary_data)
+		fd.close()
+		
+		return JsonResponse({'filename': request.build_absolute_uri('/static/images/' + filename)})
+```
+
 ## License
 Released under the MIT license - http://opensource.org/licenses/MIT
