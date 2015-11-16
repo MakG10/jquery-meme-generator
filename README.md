@@ -1,4 +1,15 @@
 # jQuery Meme Generator
+- [About](#about)
+- [Features](#features)
+- [Demo](#demo)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Internationalization](#internationalization)
+- [Saving an image on server side](#saving-an-image-on-server-side)
+	- [PHP](#php)
+	- [Python w/ Django](#python-w-django)
+- [License](#license)
 
 ## About
 Meme Generator is a jQuery plugin allowing easily creating images with captions (memes).
