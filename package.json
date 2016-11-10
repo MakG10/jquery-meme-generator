@@ -1,6 +1,6 @@
 {
   "name": "jquery-memegenerator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Meme Generator is a jQuery plugin allowing easily creating images with captions (memes).",
   "main": "src/js/jquery.memegenerator.js",
   "scripts": {},

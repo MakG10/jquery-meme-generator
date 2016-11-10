@@ -79,7 +79,7 @@ $(document).ready(function(){
 ### Options
 Property             |Default     |Description
 ---------------------|------------|-----------
-defaultTextStyle     |{<br>color: "#FFFFFF",<br>size: 42,<br>font: "Impact, Arial",<br>style: "normal",<br>forceUppercase: true,<br>borderColor: "#000000",<br>borderWidth: 2,<br>}|Default text style properties for all captions. Each text box can be styled seperately by user.
+defaultTextStyle     |{<br>color: "#FFFFFF",<br>size: 42,<br>lineHeight: 1.2,<br>font: "Impact, Arial",<br>style: "normal",<br>forceUppercase: true,<br>borderColor: "#000000",<br>borderWidth: 2,<br>}|Default text style properties for all captions. Each text box can be styled seperately by user.
 defaultDrawingStyle  |{<br>color: "#FF0000",<br>lineWidth: 10,<br>}|Default drawing style properties.
 minFontSize          |1           |Minimum font size the user can set.
 maxFontSize          |128         |Maximum font size the user can set.

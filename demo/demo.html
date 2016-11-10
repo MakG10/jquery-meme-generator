@@ -89,6 +89,7 @@
 		
 		$(".example.bootstrap img").memeGenerator({
 			useBootstrap: true,
+			
 		});
 		
 		$(".example.horizontal img").memeGenerator({
@@ -97,6 +98,7 @@
 			previewMode: "css",
 			defaultTextStyle: {
 				font: "'Comic Sans', Arial",
+				lineHeight: 2
 			},
 			captions: [
 				"PREDEFINED text on top"
@@ -107,7 +109,9 @@
 		// Example with saving
 		$("#example-save").memeGenerator({
 			useBootstrap: true,
-			
+			defaultTextStyle: {
+				lineHeight: 2
+			},
 		});
 		
 		$("#save").click(function(e){

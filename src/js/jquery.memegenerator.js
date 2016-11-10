@@ -1,3 +1,7 @@
+/*
+ * Author: Maciej Gierej
+ * https://github.com/MakG10/jquery-memegenerator
+ */
 (function($){
 	
 	var i18n = {
@@ -24,6 +28,7 @@
 			defaultTextStyle: {
 				color: "#FFFFFF",
 				size: 42,
+				lineHeight: 1.2,
 				font: "Impact, Arial",
 				style: "normal",
 				forceUppercase: true,
@@ -81,8 +86,6 @@
 		
 		this.originalSize = [];
 		this.scale = 1.0;
-		
-		this.FONT_HEIGHT_MODIFIER = 0.1;
 		
 		
 		// ===============
@@ -142,7 +145,13 @@
 							textbox = MG.ui.createTextBox("", "center center").insertAfter(MG.wrapper.find(".mg-controls .mg-textbox").last()).find(".mg-textbox-text");
 						}
 						
+						if(MG.userSettings.forceUppercase)
+						{
+							caption = MG.ui._strtoupper(caption);
+						}
+						
 						textbox.attr("value", caption);
+						textbox.attr("data-text", caption);
 						textbox.trigger("change");
 					});
 					
@@ -332,11 +341,11 @@
 				var layerName = "layer" + (MG.canvasLayers.length + 1);
 				
 				var boxWidth = MG.originalSize[0];
-				var boxHeight = MG.settings.defaultTextStyle.size + Math.round(MG.FONT_HEIGHT_MODIFIER * MG.settings.defaultTextStyle.size);
+				var boxHeight = Math.round(MG.settings.defaultTextStyle.lineHeight * MG.settings.defaultTextStyle.size);
 				var boxPosition = MG.ui._getBoxCoordinates(position, boxWidth, boxHeight);
 				
 				var box = $('<div class="mg-textbox" data-layer="' + layerName + '" data-x="' + boxPosition[0] + '" data-y="' + boxPosition[1] + '" data-width="' + boxWidth + '" data-height="' + boxHeight + '"></div>');
-				box.append($('<input type="text" class="mg-textbox-text" placeholder="' + placeholder + '">'));
+				box.append($('<input type="text" class="mg-textbox-text" placeholder="' + placeholder + '" data-text="">'));
 				box.append($('<input type="number" class="mg-textbox-size" value="' + MG.settings.defaultTextStyle.size + '" step="' + MG.settings.fontSizeStep + '" min="' + MG.settings.minFontSize + '" max="' + MG.settings.maxFontSize + '">'));
 				
 				if(MG.userSettings.forceUppercase)
@@ -362,7 +371,7 @@
 				box.find(".mg-textbox-text, .mg-textbox-size, .mg-textbox-border-width").on("change keyup", function(){
 					if(MG.userSettings.forceUppercase)
 					{
-						$(this).val(MG.ui._strtoupper($(this).val()));
+						$(this).attr("data-text", MG.ui._strtoupper($(this).val()));
 					}
 					
 					MG.events.onLayerChange(layerName);
@@ -578,22 +587,23 @@
 					if(layer.hasClass("mg-textbox"))
 					{
 						var params = {
-							text: layer.find(".mg-textbox-text").val(),
+							text: layer.find(".mg-textbox-text").attr("data-text"),
 							x: layer.attr("data-x") * canvasScale,
 							y: layer.attr("data-y") * canvasScale,
 							maxWidth: layer.attr("data-width") * canvasScale,
 							fontSize: layer.find(".mg-textbox-size").val() * canvasScale,
+							lineHeight: MG.settings.defaultTextStyle.lineHeight,
 							font: MG.settings.defaultTextStyle.font,
 							color: layer.find(".mg-textbox-text-color").val(),
 							borderColor: layer.find(".mg-textbox-border-color").attr("value"),
 							borderWidth: layer.find(".mg-textbox-border-width").val() * canvasScale
 						};
 						
-						var textCanvas = MG.canvas.drawText(params.text, params.x, params.y, params.maxWidth, params.fontSize, params.font, params.color, params.borderColor, params.borderWidth, canvasScale);
+						var textCanvas = MG.canvas.drawText(params.text, params.x, params.y, params.maxWidth, params.fontSize, params.lineHeight, params.font, params.color, params.borderColor, params.borderWidth, canvasScale);
 						MG.canvasContainer.append(textCanvas);
 						
 						var textHeight = textCanvas.attr("data-text-lines") * params.fontSize;
-						layer.attr("data-height", textHeight + Math.round(MG.FONT_HEIGHT_MODIFIER * textHeight));
+						layer.attr("data-height", Math.round(MG.settings.defaultTextStyle.lineHeight * textHeight));
 					}
 				});
 				
@@ -605,7 +615,7 @@
 				}
 			},
 			
-			drawText: function(text, x, y, maxWidth, fontSize, font, color, borderColor, borderWidth, scale){
+			drawText: function(text, x, y, maxWidth, fontSize, lineHeight, font, color, borderColor, borderWidth, scale){
 				if(typeof scale == "undefined") scale = 1.0;
  
 				var canvasElement = $('<canvas></canvas>').attr("width", MG.originalSize[0] * scale).attr("height", MG.originalSize[1] * scale);
@@ -620,12 +630,12 @@
 				
 				var posX = parseInt(x, 10) + parseInt(maxWidth, 10) / 2;
 				var posY = parseInt(y, 10) + parseInt(fontSize, 10);
-				var lineHeight = fontSize;
+				var lineHeight = fontSize * parseFloat(lineHeight);
 				
 				var lines = MG.canvas._wrapText(canvasContext, text, maxWidth);
 				lines.forEach(function(line, index){
-					canvasContext.fillText(line, posX, posY + index * lineHeight);
-					canvasContext.strokeText(line, posX, posY + index * lineHeight);
+					canvasContext.fillText(line, posX, posY - borderWidth + (lineHeight - fontSize) / 2 + index * lineHeight);
+					canvasContext.strokeText(line, posX, posY - borderWidth + (lineHeight - fontSize) / 2 + index * lineHeight);
 				});
 				
 				canvasElement.attr("data-text-lines", lines.length);
@@ -702,26 +712,27 @@
 					if(layer.hasClass("mg-textbox"))
 					{
 						var params = {
-							text: layer.find(".mg-textbox-text").val(),
+							text: layer.find(".mg-textbox-text").attr("data-text"),
 							x: layer.attr("data-x") * MG.scale,
 							y: layer.attr("data-y") * MG.scale,
 							maxWidth: layer.attr("data-width") * MG.scale,
 							fontSize: layer.find(".mg-textbox-size").val() * MG.scale,
+							lineHeight: MG.settings.defaultTextStyle.lineHeight,
 							font: MG.settings.defaultTextStyle.font,
 							color: layer.find(".mg-textbox-text-color").attr("value"),
 							borderColor: layer.find(".mg-textbox-border-color").attr("value"),
 							borderWidth: layer.find(".mg-textbox-border-width").val() * MG.scale
 						};
 						
-						var textElement = MG.cssPreview.drawText(params.text, params.x, params.y, params.maxWidth, params.fontSize, params.font, params.color, params.borderColor, params.borderWidth);
+						var textElement = MG.cssPreview.drawText(params.text, params.x, params.y, params.maxWidth, params.fontSize, params.lineHeight, params.font, params.color, params.borderColor, params.borderWidth);
 						cssPreviewContainer.append(textElement);
 						
-						layer.attr("data-height", textElement.height() + Math.round(MG.FONT_HEIGHT_MODIFIER * textElement.height()));
+						layer.attr("data-height", Math.round(textElement.height()));
 					}
 				});
 			},
  
-			drawText: function(text, x, y, maxWidth, fontSize, font, color, borderColor, borderWidth){
+			drawText: function(text, x, y, maxWidth, fontSize, lineHeight, font, color, borderColor, borderWidth){
 				var textElement = $("<div></div>").html(text);
 				textElement.css({
 					left: x,
@@ -732,7 +743,7 @@
 					fontFamily: font,
 					color: color,
 					textAlign: "center",
-					lineHeight: fontSize + "px",
+					lineHeight: parseFloat(lineHeight),
 					textShadow: (function(borderWidth, borderColor){
 						var textShadow = "";
 						[[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function(direction, index){
