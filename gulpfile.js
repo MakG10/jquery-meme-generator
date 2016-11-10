@@ -22,7 +22,7 @@ gulp.task('styles', function() {
 
 gulp.task('scripts', function() {
 	gulp.src('src/js/jquery.memegenerator.js')
-		.pipe(uglify().on('error', gutil.log))
+		.pipe(uglify({preserveComments: 'license'}).on('error', gutil.log))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest('./dist/'));
 });
