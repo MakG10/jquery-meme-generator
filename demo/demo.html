@@ -68,7 +68,7 @@
 		<div class="example save">
 			<h2>Custom save button</h2>
 			
-			<img src="images/1.jpg" id="example-save">
+			<img src="images/3.png" id="example-save">
 			
 			<div id="toolbar"></div>
 			
@@ -115,9 +115,18 @@
 			
 			var imageDataUrl = $("#example-save").memeGenerator("save");
 			
-			$("#preview").html(
-				$("<img>").attr("src", imageDataUrl)
-			);
+			$.ajax({
+				url: "http://127.0.0.1:8000/save-img",
+				type: "POST",
+				data: {image: imageDataUrl},
+				dataType: "json",
+				success: function(response){
+					console.log(response);
+					$("#preview").html(
+						$("<img>").attr("src", response.filename)
+					);
+				}
+			});
 		});
 		
 		$("#download").click(function(e){
