@@ -65,6 +65,7 @@
 			toolboxSelector: null,
 			layout: "vertical",
 			useBootstrap: false,
+			useWordpressStyle: false,
 			
 			// Events
 			onLayerChange: function(layerName){ return true; },
@@ -159,6 +160,10 @@
 					{
 						MG.ui.bootstrapify();
 					}
+					else if(MG.settings.useWordpressStyle)
+					{
+						MG.ui.wordpressify();
+					}
 				});
 				
 			$(window).on("resize", function(){
@@ -186,6 +191,10 @@
 					if(MG.settings.useBootstrap)
 					{
 						MG.ui.bootstrapify();
+					}
+					else if(MG.settings.useWordpressStyle)
+					{
+						MG.ui.wordpressify();
 					}
 					
 					newTextbox.find("input[type=text]").first().focus();
@@ -490,6 +499,28 @@
 				{
 					controls.find(".mg-drawing-toggle, .mg-drawing-erase").addClass("btn btn-default btn-block");
 					controls.find(".mg-toolbox-item").addClass("col-md-3");
+					
+				}
+			},
+ 
+			wordpressify: function(){
+				var controls = MG.wrapper.find(".mg-controls");
+				
+				MG.wrapper.addClass("usingWordpress");
+				
+				if(!controls.find(".mg-add-textbox").hasClass("button"))
+				{
+					controls.find(".mg-add-textbox").addClass("button button-secondary");
+				}
+				
+				if(!controls.find(".mg-advanced-settings-toggle").hasClass("button"))
+				{
+					controls.find(".mg-advanced-settings-toggle, .mg-toolbox-toggle").addClass("button button-primary");
+				}
+				
+				if(!controls.find(".mg-drawing-toggle").hasClass("button"))
+				{
+					controls.find(".mg-drawing-toggle, .mg-drawing-erase").addClass("button button-secondary");
 					
 				}
 			},
