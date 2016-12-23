@@ -1,7 +1,7 @@
 {
   "name": "jquery-meme-generator",
   "version": "1.0.2",
-  "description": "Meme Generator is a jQuery plugin allowing easily creating images with captions (memes).",
+  "description": "Meme Generator is a jQuery plugin allowing easily creating images with captions (memes) using interactive editor.",
   "main": "src/js/jquery.memegenerator.js",
   "scripts": {},
   "repository": {
@@ -16,12 +16,12 @@
     "image",
     "caption"
   ],
-  "author": "Maciej 'MakG' Gierej",
+  "author": "Maciej Gierej <makg@makg.eu> (http://maciej.gierej.pl)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/MakG10/jquery-meme-generator/issues"
   },
-  "homepage": "https://github.com/MakG10/jquery-meme-generator#readme",
+  "homepage": "http://maciej.gierej.pl/en/jquery-meme-generator",
   "dependencies": {
     "jquery": ">=1.7.2",
     "jquery-ui": ">=1.7.2"
