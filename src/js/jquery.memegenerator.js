@@ -70,6 +70,7 @@
 			// Events
 			onLayerChange: function(layerName){ return true; },
 			onNewTextBox: function(textBox){ return true; },
+			onInit: function(){ return true; }
 		}, options);
 		
 		// Options possible to be overwritten by user
@@ -80,9 +81,9 @@
 		};
 		
 		this.element = element;
-		this.wrapper;
-		this.canvasContainer;
-		this.helpersContainer;
+		this.wrapper = null;
+		this.canvasContainer = null;
+		this.helpersContainer = null;
 		this.canvasLayers = [];
 		
 		this.originalSize = [];
@@ -101,11 +102,49 @@
 			return MG.canvas.save();
 		};
 		
-		this.download = function(){
-			var downloadLink = $("<a></a>").attr("href", this.save()).attr("download", "test.png").appendTo(MG.wrapper);
+		this.download = function(filename){
+			if(typeof filename === 'undefined') filename = 'image.png';
+
+			var downloadLink = $("<a></a>").attr("href", this.save()).attr("download", filename).appendTo(MG.wrapper);
 			downloadLink[0].click();
 			
 			downloadLink.remove();
+		};
+
+		this.serialize = function(){
+			return JSON.stringify(MG.getLayersData());
+		};
+
+		this.deserialize = function(json){
+			var layers = JSON.parse(json);
+
+			var newLayers = [];
+			MG.canvasLayers.forEach(function(layerName, index) {
+				var layer = MG.wrapper.find("[data-layer='" + layerName + "']");
+
+				if(MG.getLayerType(layer))
+				{
+					layer.remove();
+
+					var helper = MG.wrapper.find("[data-target-layer='" + layerName + "']");
+					helper.remove();
+
+					return;
+				}
+
+				newLayers.push(layerName);
+			});
+
+			MG.canvasLayers = newLayers;
+
+			layers.reverse().forEach(function(layer){
+				if(layer.type == 'text')
+				{
+					MG.ui.createTextBox("", null, layer).prependTo(MG.wrapper.find('.mg-controls'));
+				}
+			});
+
+			MG.events.onLayerChange();
 		};
 		
 		
@@ -164,6 +203,8 @@
 					{
 						MG.ui.wordpressify();
 					}
+
+					MG.settings.onInit.call(MG);
 				});
 				
 			$(window).on("resize", function(){
@@ -171,8 +212,6 @@
 				
 				MG.events.onLayerChange();
 			});
-			
-			
 		};
 		
 		this.ui = {
@@ -342,20 +381,36 @@
 				});
 				
 				MG.ui._bindColorpicker(toolbox.find(".colorpicker"));
-				
+
 				return controls;
 			},
  
-			createTextBox: function(placeholder, position){
-				var layerName = "layer" + (MG.canvasLayers.length + 1);
+			createTextBox: function(placeholder, position, params){
+				if(typeof params === 'undefined') params = {};
+
+				params = $.extend({
+					layerName: "layer" + (MG.canvasLayers.length + 1),
+					text: "",
+					x: 0,
+					y: 0,
+					maxWidth: MG.originalSize[0],
+					fontSize: MG.settings.defaultTextStyle.size,
+					color: MG.settings.defaultTextStyle.color,
+					borderColor: MG.settings.defaultTextStyle.borderColor,
+					borderWidth: MG.settings.defaultTextStyle.borderWidth
+				}, params);
+				params.height = Math.round(MG.settings.defaultTextStyle.lineHeight * params.fontSize);
+
+				var layerName = params.layerName;
 				
-				var boxWidth = MG.originalSize[0];
-				var boxHeight = Math.round(MG.settings.defaultTextStyle.lineHeight * MG.settings.defaultTextStyle.size);
-				var boxPosition = MG.ui._getBoxCoordinates(position, boxWidth, boxHeight);
+				var boxWidth = params.maxWidth;
+				var boxHeight = params.height;
+				var boxPosition = position === null ? [params.x, params.y]
+					: MG.ui._getBoxCoordinates(position, params.maxWidth, params.height);
 				
 				var box = $('<div class="mg-textbox" data-layer="' + layerName + '" data-x="' + boxPosition[0] + '" data-y="' + boxPosition[1] + '" data-width="' + boxWidth + '" data-height="' + boxHeight + '"></div>');
-				box.append($('<input type="text" class="mg-textbox-text" placeholder="' + placeholder + '" data-text="">'));
-				box.append($('<input type="number" class="mg-textbox-size" value="' + MG.settings.defaultTextStyle.size + '" step="' + MG.settings.fontSizeStep + '" min="' + MG.settings.minFontSize + '" max="' + MG.settings.maxFontSize + '">'));
+				box.append($('<input type="text" class="mg-textbox-text" placeholder="' + placeholder + '" data-text="' + params.text + '" value="' + params.text + '">'));
+				box.append($('<input type="number" class="mg-textbox-size" value="' + params.fontSize + '" step="' + MG.settings.fontSizeStep + '" min="' + MG.settings.minFontSize + '" max="' + MG.settings.maxFontSize + '">'));
 				
 				if(MG.userSettings.forceUppercase)
 				{
@@ -364,14 +419,14 @@
 				
 				if(MG.settings.colorPicker != false)
 				{
-					box.append('<input type="text" class="mg-textbox-text-color colorpicker" value="' + MG.settings.defaultTextStyle.color + '">');
-					box.append('<input type="text" class="mg-textbox-border-color colorpicker" value="' + MG.settings.defaultTextStyle.borderColor + '">');
+					box.append('<input type="text" class="mg-textbox-text-color colorpicker" value="' + params.color + '">');
+					box.append('<input type="text" class="mg-textbox-border-color colorpicker" value="' + params.borderColor + '">');
 					box.find(".colorpicker").wrap('<div class="colorpickerContainer"></div>');
 					
 					MG.ui._bindColorpicker(box.find(".colorpicker"));
 				}
 				
-				box.append($('<input type="number" class="mg-textbox-border-width" value="' + MG.settings.defaultTextStyle.borderWidth + '" step="' + MG.settings.borderWidthStep + '" min="' + MG.settings.minBorderWidth + '" max="' + MG.settings.maxBorderWidth + '">'));
+				box.append($('<input type="number" class="mg-textbox-border-width" value="' + params.borderWidth + '" step="' + MG.settings.borderWidthStep + '" min="' + MG.settings.minBorderWidth + '" max="' + MG.settings.maxBorderWidth + '">'));
 				
 				// Canvas Layer
 				MG.canvasLayers.push(layerName);
@@ -421,6 +476,15 @@
 						MG.events.onLayerChange();
 					}
 				});
+
+				//helper.on('click', function(e){
+				//	var layer = MG.wrapper.find("[data-layer='" + layerName + "']");
+				//	var input = layer.find('.mg-textbox-text');
+				//	var length = input.val().length;
+				//
+				//	input.select();
+				//	input[0].setSelectionRange(length, length);
+				//});
 			},
  
 			resizeHelpers: function(){
@@ -605,36 +669,90 @@
 				return text.toUpperCase();
 			}
 		};
+
+		this.getLayersData = function(){
+			var layers = [];
+
+			MG.canvasLayers.forEach(function(layerName){
+				var layer = MG.wrapper.find("[data-layer='" + layerName + "']");
+				var type = MG.getLayerType(layer);
+
+				switch(type)
+				{
+					case 'text':
+						layers.push({
+							type: type,
+							name: layerName,
+							text: layer.find(".mg-textbox-text").attr("data-text"),
+							x: layer.attr("data-x"),
+							y: layer.attr("data-y"),
+							maxWidth: layer.attr("data-width"),
+							fontSize: layer.find(".mg-textbox-size").val(),
+							lineHeight: MG.settings.defaultTextStyle.lineHeight,
+							font: MG.settings.defaultTextStyle.font,
+							color: layer.find(".mg-textbox-text-color").val(),
+							borderColor: layer.find(".mg-textbox-border-color").attr("value"),
+							borderWidth: layer.find(".mg-textbox-border-width").val()
+						});
+						return;
+
+					// TODO: serialization of drawing?
+					case 'drawing':
+						layers.push({
+							type: type
+						});
+						return;
+
+					default:
+						return;
+				}
+			});
+
+			return layers;
+		};
+
+		this.getLayerType = function(layer) {
+			if(layer.hasClass('mg-textbox'))
+			{
+				return 'text';
+			}
+
+			if(layer.hasClass('mg-drawing-layer'))
+			{
+				return 'drawing';
+			}
+
+			return null;
+		};
 		
 		this.canvas = {
 			drawLayers: function(canvasScale){
 				if(typeof canvasScale == "undefined") canvasScale = MG.scale;
  
 				MG.canvasContainer.find("canvas:not(.mg-drawing-layer)").remove("");
-				
-				MG.canvasLayers.forEach(function(layerName){
-					var layer = MG.wrapper.find("[data-layer='" + layerName + "']");
-					
-					if(layer.hasClass("mg-textbox"))
+
+				MG.getLayersData().forEach(function(layer){
+					layerElement = MG.wrapper.find("[data-layer='" + layer.name + "']");
+
+					if(layer.type == 'text')
 					{
-						var params = {
-							text: layer.find(".mg-textbox-text").attr("data-text"),
-							x: layer.attr("data-x") * canvasScale,
-							y: layer.attr("data-y") * canvasScale,
-							maxWidth: layer.attr("data-width") * canvasScale,
-							fontSize: layer.find(".mg-textbox-size").val() * canvasScale,
-							lineHeight: MG.settings.defaultTextStyle.lineHeight,
-							font: MG.settings.defaultTextStyle.font,
-							color: layer.find(".mg-textbox-text-color").val(),
-							borderColor: layer.find(".mg-textbox-border-color").attr("value"),
-							borderWidth: layer.find(".mg-textbox-border-width").val() * canvasScale
-						};
-						
-						var textCanvas = MG.canvas.drawText(params.text, params.x, params.y, params.maxWidth, params.fontSize, params.lineHeight, params.font, params.color, params.borderColor, params.borderWidth, canvasScale);
+						var textCanvas = MG.canvas.drawText(
+							layer.text,
+							layer.x * canvasScale,
+							layer.y * canvasScale,
+							layer.maxWidth * canvasScale,
+							layer.fontSize * canvasScale,
+							layer.lineHeight,
+							layer.font,
+							layer.color,
+							layer.borderColor,
+							layer.borderWidth * canvasScale,
+							canvasScale
+						);
 						MG.canvasContainer.append(textCanvas);
-						
-						var textHeight = textCanvas.attr("data-text-lines") * params.fontSize;
-						layer.attr("data-height", Math.round(MG.settings.defaultTextStyle.lineHeight * textHeight));
+
+						var textHeight = textCanvas.attr("data-text-lines") * layer.fontSize;
+						layerElement.attr("data-height", Math.round(MG.settings.defaultTextStyle.lineHeight * textHeight));
 					}
 				});
 				
@@ -736,29 +854,27 @@
 			drawLayers: function(){
 				var cssPreviewContainer = MG.wrapper.find(".mg-css-preview");
 				cssPreviewContainer.find("div").remove();
-				
-				MG.canvasLayers.forEach(function(layerName){
-					var layer = MG.wrapper.find("[data-layer='" + layerName + "']");
-					
-					if(layer.hasClass("mg-textbox"))
+
+				MG.getLayersData().forEach(function(layer){
+					layerElement = MG.wrapper.find("[data-layer='" + layer.name + "']");
+
+					if(layer.type == 'text')
 					{
-						var params = {
-							text: layer.find(".mg-textbox-text").attr("data-text"),
-							x: layer.attr("data-x") * MG.scale,
-							y: layer.attr("data-y") * MG.scale,
-							maxWidth: layer.attr("data-width") * MG.scale,
-							fontSize: layer.find(".mg-textbox-size").val() * MG.scale,
-							lineHeight: MG.settings.defaultTextStyle.lineHeight,
-							font: MG.settings.defaultTextStyle.font,
-							color: layer.find(".mg-textbox-text-color").attr("value"),
-							borderColor: layer.find(".mg-textbox-border-color").attr("value"),
-							borderWidth: layer.find(".mg-textbox-border-width").val() * MG.scale
-						};
-						
-						var textElement = MG.cssPreview.drawText(params.text, params.x, params.y, params.maxWidth, params.fontSize, params.lineHeight, params.font, params.color, params.borderColor, params.borderWidth);
+						var textElement = MG.cssPreview.drawText(
+							layer.text,
+							layer.x * MG.scale,
+							layer.y * MG.scale,
+							layer.maxWidth * MG.scale,
+							layer.fontSize * MG.scale,
+							layer.lineHeight * MG.scale,
+							layer.font,
+							layer.color,
+							layer.borderColor,
+							layer.borderWidth * MG.scale
+						);
 						cssPreviewContainer.append(textElement);
-						
-						layer.attr("data-height", Math.round(textElement.height()));
+
+						layerElement.attr("data-height", Math.round(textElement.height()));
 					}
 				});
 			},

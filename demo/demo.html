@@ -41,6 +41,8 @@
 		#preview {
 			min-height: 200px;
 			background-color: #EFEFEF;
+            font-family: monospace;
+            overflow-y: auto;
 		}
 		#preview img {
 			max-width: 100%;
@@ -52,7 +54,7 @@
 	
 		<div class="example default">
 			<h2>Default meme generator without any custom options</h2>
-			<img src="images/1.jpg">
+			<img src="images/3.png">
 		</div>
 		
 		<div class="example bootstrap">
@@ -79,6 +81,7 @@
 					<div class="col-md-4">
 						<button class="btn btn-success" id="save">Save</button>
 						<button class="btn btn-danger" id="download">Download</button>
+                        <button class="btn btn-primary" id="serialize">Serialize</button>
 					</div>
 				</div>
 			</div>
@@ -86,10 +89,9 @@
 	
 		<script>
 		$(".example.default img").memeGenerator({});
-		
+
 		$(".example.bootstrap img").memeGenerator({
-			useBootstrap: true,
-			
+			useBootstrap: true
 		});
 		
 		$(".example.horizontal img").memeGenerator({
@@ -108,10 +110,7 @@
 		
 		// Example with saving
 		$("#example-save").memeGenerator({
-			useBootstrap: true,
-			defaultTextStyle: {
-				lineHeight: 2
-			},
+			useBootstrap: true
 		});
 		
 		$("#save").click(function(e){
@@ -125,11 +124,13 @@
 				data: {image: imageDataUrl},
 				dataType: "json",
 				success: function(response){
-					console.log(response);
 					$("#preview").html(
 						$("<img>").attr("src", response.filename)
 					);
-				}
+				},
+                error: function(){
+                    alert('This demo uses communication with the server which is not implemented here.');
+                }
 			});
 		});
 		
@@ -138,6 +139,10 @@
 			
 			$("#example-save").memeGenerator("download");
 		});
+
+        $("#serialize").click(function(e){
+            $("#preview").html($("#example-save").memeGenerator("serialize"));
+        });
 		
 		//
 		</script>
