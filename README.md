@@ -256,6 +256,7 @@ def save_img(request):
 - New serialize and deserialize methods
 - Experimental: changing text directly on image
 - Filename argument for the public "download" method
+- New onInit event
 
 ### Version 1.0.2
 - New lineHeight param
