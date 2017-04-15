@@ -347,9 +347,8 @@
 						toolbox = $(MG.settings.toolboxSelector);
 					}
 				}
-				
-				toolbox.append('<div class="mg-toolbox-item"><button class="mg-drawing-toggle">' + 
-					       + '</button></div>');
+
+				toolbox.append('<div class="mg-toolbox-item"><button class="mg-drawing-toggle">' + i18n.drawingStart + '</button></div>');
 				toolbox.append('<div class="mg-toolbox-item"><input type="text" class="colorpicker" value="' + MG.settings.defaultDrawingStyle.color + '"></div>');
 				toolbox.append('<div class="mg-toolbox-item"><input type="number" class="mg-drawing-line-width" value="' + MG.settings.defaultDrawingStyle.lineWidth + '"></div>');
 				toolbox.append('<div class="mg-toolbox-item"><button class="mg-drawing-erase">' + i18n.drawingErase + '</button></div>');
