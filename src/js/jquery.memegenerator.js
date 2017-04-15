@@ -165,7 +165,7 @@
  
 			$("<img>")
 				.attr("src", element.attr("src"))
-				.load(function(){
+				.on('load', function(){
 					MG.originalSize[0] = this.width;
 					MG.originalSize[1] = this.height;
 					
