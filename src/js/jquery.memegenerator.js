@@ -455,10 +455,10 @@
 				
 				// Bind events
 				box.find(".mg-textbox-text, .mg-textbox-size, .mg-textbox-border-width").on("change keyup", function(){
-					if(MG.userSettings.forceUppercase)
-					{
-						$(this).attr("data-text", MG.ui._strtoupper($(this).val()));
-					}
+					var text = $(this).val();
+					if(MG.userSettings.forceUppercase) text = MG.ui._strtoupper(text);
+
+					$(this).attr("data-text", text);
 					
 					MG.events.onLayerChange(layerName);
 				});
@@ -820,7 +820,7 @@
 				canvasContext.font = style + " " + fontSize + "px " + font;
 				canvasContext.textAlign = "center";
 				canvasContext.fillStyle = color;
-				canvasContext.strokeStyle = borderColor
+				canvasContext.strokeStyle = borderColor;
 				canvasContext.lineWidth = borderWidth;
 				
 				var posX = parseInt(x, 10) + parseInt(maxWidth, 10) / 2;
@@ -830,7 +830,9 @@
 				var lines = MG.canvas._wrapText(canvasContext, text, maxWidth);
 				lines.forEach(function(line, index){
 					canvasContext.fillText(line, posX, posY - borderWidth + (lineHeight - fontSize) / 2 + index * lineHeight);
-					canvasContext.strokeText(line, posX, posY - borderWidth + (lineHeight - fontSize) / 2 + index * lineHeight);
+
+					if(borderWidth > 0)
+						canvasContext.strokeText(line, posX, posY - borderWidth + (lineHeight - fontSize) / 2 + index * lineHeight);
 				});
 				
 				canvasElement.attr("data-text-lines", lines.length);
