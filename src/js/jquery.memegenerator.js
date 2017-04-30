@@ -88,7 +88,8 @@
 		
 		this.originalSize = [];
 		this.scale = 1.0;
-		
+
+		this.initialized = false;
 		
 		// ===============
 		// PUBLIC METHODS
@@ -204,12 +205,26 @@
 						MG.ui.wordpressify();
 					}
 
+					MG.initialized = true;
 					MG.settings.onInit.call(MG);
 				});
 				
 			$(window).on("resize", function(){
 				MG.scale = element.width() / MG.originalSize[0];
 				
+				MG.events.onLayerChange();
+			});
+
+			// Handling change of the src attribute
+			element.on('load', function(){
+				if(!MG.initialized) return;
+
+				MG.originalSize[0] = this.width;
+				MG.originalSize[1] = this.height;
+
+				MG.scale = element.width() / MG.originalSize[0];
+
+				MG.ui.resizeHelpers();
 				MG.events.onLayerChange();
 			});
 		};
