@@ -131,6 +131,7 @@ saveCanvas           |Returns the image with captions as a single canvas element
 download             |Generates the image and automatically initiates a download.<br>**Parameters:** filename (optional)<br>__Note:__ file name should have an extension appropriate to outputFormat option (default image/png). Default file name is "image.png".<br>**Usage:** `$("selector").memeGenerator("download", "image.png");`
 serialize            |Returns JSON string with all the layers which can be stored and restored later with deserialize method.<br>__Note:__ Currently only text layers are supported, drawings aren't getting serialized.<br>**Usage:** `var json = $("selector").memeGenerator("serialize");`
 deserialize          |Restores the layers from the JSON string. If there is missing data from the layers (i.e. no font size), the default values will be used.<br>__Note:__ As of now, you have to make sure to call `deserialize` after the meme generator has been initialized (image has been loaded and controls created). You can use `onInit` event.<br>**Usage:** `$("selector").memeGenerator("deserialize", '[{"type":"text","name":"layer1","text":"TEXT1","x":"0","y":"0","maxWidth":"555","fontSize":"60","lineHeight":1.2,"font":"Impact, Arial","color":"#69aae7","borderColor":"#000000","borderWidth":"6"},{"type":"text","name":"layer2","text":"TEXT2","x":"0","y":"454","maxWidth":"555","fontSize":"42","lineHeight":1.2,"font":"Impact, Arial","color":"#00ff6c","borderColor":"#ff0000","borderWidth":"2"}]');`
+destroy              |Destroys the meme generator leaving the source <img> tag intact.
 
 ### Custom Color Picker - Example
 By default, Meme Generator plugin is using Spectrum as a color picker, if it's included on the page, otherwise it falls back to a simple text input.
@@ -251,6 +252,11 @@ def save_img(request):
 ```
 
 ## Changelog
+
+### Version 1.0.4
+- New "destroy" method
+- Handling dynamic changes of "src" attribute
+- Fixed jQuery 3 compatibility issue
 
 ### Version 1.0.3
 - New serialize and deserialize methods

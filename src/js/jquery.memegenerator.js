@@ -147,6 +147,13 @@
 
 			MG.events.onLayerChange();
 		};
+
+		this.destroy = function(){
+			this.element.insertAfter(this.wrapper);
+			this.element.off('load.mg');
+
+			this.wrapper.remove();
+		};
 		
 		
 		// ===============
@@ -216,7 +223,7 @@
 			});
 
 			// Handling change of the src attribute
-			element.on('load', function(){
+			element.on('load.mg', function(){
 				if(!MG.initialized) return;
 
 				MG.originalSize[0] = this.width;
