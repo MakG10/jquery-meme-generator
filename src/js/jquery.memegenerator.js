@@ -226,8 +226,8 @@
 			element.on('load.mg', function(){
 				if(!MG.initialized) return;
 
-				MG.originalSize[0] = this.width;
-				MG.originalSize[1] = this.height;
+				MG.originalSize[0] = this.naturalWidth;
+				MG.originalSize[1] = this.naturalHeight;
 
 				MG.scale = element.width() / MG.originalSize[0];
 
@@ -512,22 +512,44 @@
 			resizeHelpers: function(){
 				MG.helpersContainer.find("> div").each(function(){
 					var layer = MG.wrapper.find("[data-layer='" + $(this).attr("data-target-layer") + "']");
-					
+					var width, height, x, y = null;
+
+					// WIDTH
 					if(layer.attr("data-width"))
 					{
-						$(this).css("width", parseInt(layer.attr("data-width"), 10) * MG.scale);
+						width = parseInt(layer.attr("data-width"), 10) * MG.scale;
+						if(width > MG.helpersContainer.width()) width = MG.helpersContainer.width();
+
+						$(this).css("width", width);
+
+						layer.attr("data-width", parseInt(width * (1 / MG.scale), 10));
 					}
-					
+
+					// HEIGHT
 					if(layer.attr("data-height"))
 					{
-						$(this).css("height", parseInt(layer.attr("data-height"), 10));
-						$(this).resizable("option", "minHeight", parseInt(layer.attr("data-height"), 10));
-						$(this).resizable("option", "maxHeight", parseInt(layer.attr("data-height"), 10));
+						height = parseInt(layer.attr("data-height"), 10) * MG.scale;
+
+						$(this).css("height", height);
+						$(this).resizable("option", "minHeight", height);
+						$(this).resizable("option", "maxHeight", height);
 					}
-					
+
+					// X & Y coordinates
 					if(layer.attr("data-x") && layer.attr("data-y"))
 					{
-						$(this).css({left: layer.attr("data-x") * MG.scale, top: layer.attr("data-y") * MG.scale});
+						x = layer.attr("data-x") * MG.scale;
+						if(x > MG.helpersContainer.width()) x = MG.helpersContainer.width() - width;
+						if(x < 0) x = 0;
+
+						y = layer.attr("data-y") * MG.scale;
+						if(y > MG.helpersContainer.height()) y = MG.helpersContainer.height() - height;
+						if(y < 0) y = 0;
+
+						$(this).css({left: x, top: y});
+
+						layer.attr('data-x', parseInt(x * (1 / MG.scale), 10));
+						layer.attr('data-y', parseInt(y * (1 / MG.scale), 10));
 					}
 					
 					if(parseInt($(this).css("top"), 10) + $(this).outerHeight() > MG.helpersContainer.height())
@@ -712,6 +734,7 @@
 							fontSize: layer.find(".mg-textbox-size").val(),
 							lineHeight: MG.settings.defaultTextStyle.lineHeight,
 							font: MG.settings.defaultTextStyle.font,
+							style: MG.settings.defaultTextStyle.style,
 							color: layer.find(".mg-textbox-text-color").val(),
 							borderColor: layer.find(".mg-textbox-border-color").attr("value"),
 							borderWidth: layer.find(".mg-textbox-border-width").val()
@@ -766,6 +789,7 @@
 							layer.fontSize * canvasScale,
 							layer.lineHeight,
 							layer.font,
+							layer.style,
 							layer.color,
 							layer.borderColor,
 							layer.borderWidth * canvasScale,
@@ -786,14 +810,14 @@
 				}
 			},
 			
-			drawText: function(text, x, y, maxWidth, fontSize, lineHeight, font, color, borderColor, borderWidth, scale){
+			drawText: function(text, x, y, maxWidth, fontSize, lineHeight, font, style, color, borderColor, borderWidth, scale){
 				if(typeof scale == "undefined") scale = 1.0;
  
 				var canvasElement = $('<canvas></canvas>').attr("width", MG.originalSize[0] * scale).attr("height", MG.originalSize[1] * scale);
 				var canvasContext = canvasElement[0].getContext("2d");
 				
 				// Font settings
-				canvasContext.font = fontSize + "px " + font;
+				canvasContext.font = style + " " + fontSize + "px " + font;
 				canvasContext.textAlign = "center";
 				canvasContext.fillStyle = color;
 				canvasContext.strokeStyle = borderColor
@@ -890,6 +914,7 @@
 							layer.fontSize * MG.scale,
 							layer.lineHeight * MG.scale,
 							layer.font,
+							layer.style,
 							layer.color,
 							layer.borderColor,
 							layer.borderWidth * MG.scale
@@ -901,7 +926,7 @@
 				});
 			},
  
-			drawText: function(text, x, y, maxWidth, fontSize, lineHeight, font, color, borderColor, borderWidth){
+			drawText: function(text, x, y, maxWidth, fontSize, lineHeight, font, style, color, borderColor, borderWidth){
 				var textElement = $("<div></div>").html(text);
 				textElement.css({
 					left: x,
@@ -910,6 +935,8 @@
 					minHeight: fontSize,
 					fontSize: fontSize,
 					fontFamily: font,
+					fontWeight: style.indexOf('bold') == -1 ? 'normal' : 'bold',
+					fontStyle: style.indexOf('italic') == -1 ? 'normal' : 'italic',
 					color: color,
 					textAlign: "center",
 					lineHeight: parseFloat(lineHeight),
