@@ -539,11 +539,11 @@
 					if(layer.attr("data-x") && layer.attr("data-y"))
 					{
 						x = layer.attr("data-x") * MG.scale;
-						if(x > MG.helpersContainer.width()) x = MG.helpersContainer.width() - width;
+						if(x + width > MG.helpersContainer.width()) x = MG.helpersContainer.width() - width;
 						if(x < 0) x = 0;
 
 						y = layer.attr("data-y") * MG.scale;
-						if(y > MG.helpersContainer.height()) y = MG.helpersContainer.height() - height;
+						if(y + height > MG.helpersContainer.height()) y = MG.helpersContainer.height() - height;
 						if(y < 0) y = 0;
 
 						$(this).css({left: x, top: y});
