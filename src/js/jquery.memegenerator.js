@@ -264,88 +264,90 @@
 				});
 				
 				// Advanced settings
-				var advancedSettingsButton = $('<a href="#" class="mg-advanced-settings-toggle">' + i18n.advancedSettings + '</a>').appendTo(controls);
-				var advancedSettings = $('<div class="mg-advanced-settings"></div>').appendTo(controls).hide();
-				
-				// -- Force uppercase option
-				advancedSettings.append(
-					$('<div class="option"></div>')
-						.append($('<input type="checkbox" class="mg-option-uppercase">'))
-						.append($('<label>' + i18n.optionCapitalLetters + '</label>'))
-				);
-				controls.find(".mg-option-uppercase").prop("checked", MG.userSettings.forceUppercase);
-				
-				controls.find(".mg-option-uppercase").change(function(e){
-					e.preventDefault();
+				if(MG.settings.showAdvancedSettings)
+				{
+					var advancedSettingsButton = $('<a href="#" class="mg-advanced-settings-toggle">' + i18n.advancedSettings + '</a>').appendTo(controls);
+					var advancedSettings = $('<div class="mg-advanced-settings"></div>').appendTo(controls).hide();
 					
-					MG.userSettings.forceUppercase = $(this).is(":checked");
+					// -- Force uppercase option
+					advancedSettings.append(
+						$('<div class="option"></div>')
+							.append($('<input type="checkbox" class="mg-option-uppercase">'))
+							.append($('<label>' + i18n.optionCapitalLetters + '</label>'))
+					);
+					controls.find(".mg-option-uppercase").prop("checked", MG.userSettings.forceUppercase);
 					
-					if(MG.userSettings.forceUppercase)
-					{
-						controls.find(".mg-textbox-text").css("textTransform", "uppercase");
+					controls.find(".mg-option-uppercase").change(function(e){
+						e.preventDefault();
 						
-						controls.find(".mg-textbox-text").each(function(){
-							$(this).val(MG.ui._strtoupper($(this).val()));
-						});
+						MG.userSettings.forceUppercase = $(this).is(":checked");
 						
-						MG.events.onLayerChange();
-					} else {
-						controls.find(".mg-textbox-text").css("textTransform", "none");
-					}
-				});
-				
-				// -- Drag & Resize option
-				advancedSettings.append(
-					$('<div class="option"></div>')
-						.append($('<input type="checkbox" class="mg-option-dragresize">'))
-						.append($('<label>' + i18n.optionDragResize + '</label>'))
-				);
-				controls.find(".mg-option-dragresize").prop("checked", MG.userSettings.dragResizeEnabled);
-				
-				controls.find(".mg-option-dragresize").change(function(e){
-					e.preventDefault();
+						if(MG.userSettings.forceUppercase)
+						{
+							controls.find(".mg-textbox-text").css("textTransform", "uppercase");
+							
+							controls.find(".mg-textbox-text").each(function(){
+								$(this).val(MG.ui._strtoupper($(this).val()));
+							});
+							
+							MG.events.onLayerChange();
+						} else {
+							controls.find(".mg-textbox-text").css("textTransform", "none");
+						}
+					});
 					
-					MG.userSettings.dragResizeEnabled = $(this).is(":checked");
+					// -- Drag & Resize option
+					advancedSettings.append(
+						$('<div class="option"></div>')
+							.append($('<input type="checkbox" class="mg-option-dragresize">'))
+							.append($('<label>' + i18n.optionDragResize + '</label>'))
+					);
+					controls.find(".mg-option-dragresize").prop("checked", MG.userSettings.dragResizeEnabled);
 					
-					MG.ui.destroyPositionHelpers();
-					if(MG.userSettings.dragResizeEnabled)
-					{
-						controls.find(".mg-textbox").each(function(){
-							MG.ui.createPositionHelper($(this));
-						});
-					}
-				});
-				
-				// -- Drawing and text - layers order
-				advancedSettings.append(
-					$('<div class="option"></div>')
-						.append($('<input type="checkbox" class="mg-option-drawing-above-text">'))
-						.append($('<label>' + i18n.optionDrawingAboveText + '</label>'))
-				);
-				controls.find(".mg-option-drawing-above-text").prop("checked", MG.userSettings.dragResizeEnabled);
-				
-				controls.find(".mg-option-drawing-above-text").change(function(e){
-					e.preventDefault();
+					controls.find(".mg-option-dragresize").change(function(e){
+						e.preventDefault();
+						
+						MG.userSettings.dragResizeEnabled = $(this).is(":checked");
+						
+						MG.ui.destroyPositionHelpers();
+						if(MG.userSettings.dragResizeEnabled)
+						{
+							controls.find(".mg-textbox").each(function(){
+								MG.ui.createPositionHelper($(this));
+							});
+						}
+					});
 					
-					MG.userSettings.drawingAboveText = $(this).is(":checked");
+					// -- Drawing and text - layers order
+					advancedSettings.append(
+						$('<div class="option"></div>')
+							.append($('<input type="checkbox" class="mg-option-drawing-above-text">'))
+							.append($('<label>' + i18n.optionDrawingAboveText + '</label>'))
+					);
+					controls.find(".mg-option-drawing-above-text").prop("checked", MG.userSettings.dragResizeEnabled);
 					
-					if(MG.userSettings.drawingAboveText)
-					{
-						MG.wrapper.find(".mg-canvas canvas, .mg-css-preview").css("zIndex", 3);
-						MG.wrapper.find(".mg-canvas, .mg-canvas .mg-drawing-layer").css("zIndex", 4);
-					} else {
-						MG.wrapper.find(".mg-canvas canvas, .mg-css-preview").css("zIndex", 4);
-						MG.wrapper.find(".mg-canvas, .mg-canvas .mg-drawing-layer").css("zIndex", 3);
-					}
-				});
-				
-				$(advancedSettingsButton).click(function(e){
-					e.preventDefault();
+					controls.find(".mg-option-drawing-above-text").change(function(e){
+						e.preventDefault();
+						
+						MG.userSettings.drawingAboveText = $(this).is(":checked");
+						
+						if(MG.userSettings.drawingAboveText)
+						{
+							MG.wrapper.find(".mg-canvas canvas, .mg-css-preview").css("zIndex", 3);
+							MG.wrapper.find(".mg-canvas, .mg-canvas .mg-drawing-layer").css("zIndex", 4);
+						} else {
+							MG.wrapper.find(".mg-canvas canvas, .mg-css-preview").css("zIndex", 4);
+							MG.wrapper.find(".mg-canvas, .mg-canvas .mg-drawing-layer").css("zIndex", 3);
+						}
+					});
 					
-					advancedSettings.slideToggle(200);
-					advancedSettingsButton.toggleClass("active");
-				});
-				
+					$(advancedSettingsButton).click(function(e){
+						e.preventDefault();
+						
+						advancedSettings.slideToggle(200);
+						advancedSettingsButton.toggleClass("active");
+					});
+				}
 				
 				// Toolbox
 				var toolbox;
